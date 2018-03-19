@@ -1,0 +1,92 @@
+---
+title: "project final"
+author: "Corey May"
+date: "3/19/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+**Practical Machine Learning**
+
+**End of Course Project- by Corey May**
+
+```{r, echo=FALSE}
+suppressMessages(library(ggplot2) )
+suppressMessages(library(caret) )
+suppressMessages(library(kernlab) )
+suppressMessages(library(gridExtra) )
+```
+
+
+Below are the steps I took to complete the end of course project.  This write-up is split into 3 sections data preparation/exploratory data analysis (EDA), modeling and results.
+
+
+**Data Preparation and EDA**
+
+The first step of the project was data preparation and EDA.  I began by eliminating variables that had insufficient data, 100 out of 160 variables had missing values (NA’s) for 98% of the 19,622 records.   These variables were removed from the analysis in both the training and test sets (see figure 1). 
+
+
+```{r}
+## Read in and prepare data
+pmltrain = read.csv("/Users/cmay/Documents/Training/pml-training.csv", stringsAsFactors=FALSE)
+pmltest  = read.csv("/Users/cmay/Documents/Training/pml-testing.csv",  stringsAsFactors=FALSE)
+  names(pmltrain)[names(pmltrain)=='X'] <- 'id'
+  names(pmltest )[names(pmltest) =='X'] <- 'id'
+  table(pmltrain$classe, exclude=FALSE)
+
+## Get the number of NA records in a dataframes of columns
+countnas <- function(z) {
+  na_count <-sapply(z, function(y) sum(length(which(is.na(y) | y == ""))))
+  na_count <- data.frame(na_count)
+  na_count$pct <- round(na_count$na_count  / nrow(z),4)
+  return(na_count)
+}
+
+```
+
+
+Figure 1- excerpt of variables to be removed
+```{r}
+## Writeout table for report
+head(countnas(pmltrain),20)
+```
+
+
+
+Next, I explored predictors that were not associated with the outcome variable ‘classe’.  I used a series of plotting techniques, boxplots, density plots, histograms, etc. to visualize the relationships (see figure 2).  I determined that all the variables that began with “gyro” could be removed as most of the values for these predictors were near-zero or zero and would not be good classifiers for the outcome variable.
+
+Finally, I investigated whether principal component analysis (PCA) could be used to reduce the number of predictors and/or identify predictors that were correlated.  The results of this did not appear helpful so I did not use PCA (see Figure 3).
+
+
+```{r}
+## Remove vars with at least one NA, most have 19K NA's
+## Set sample seed here.  This will be run 3 times by changing the seed to create different samples
+## Could also build a function for all of this work if I want to
+  ## 1) seed 41;
+  ## 2) seed 92621;
+  ## 3) seed 52800
+set.seed(41) 
+pmltrain.clean <- pmltrain[ , apply(pmltrain, 2, function(x) {!any(is.na(x)) & !any( x == "") } )]
+pmltest.clean  <- pmltest[ ,  apply(pmltest, 2, function(x) {!any(is.na(x)) & !any( x == "") } )]
+
+## Remove character, id and timestamp variables from final test set
+pmltest.clean  <- pmltest.clean[,-c(1:7)]
+
+## Build cross-validation training and test sets
+intrain  = createDataPartition(pmltrain.clean$classe, p=3/4)[[1]]
+training = pmltrain.clean[ intrain, ]
+testing  = pmltrain.clean[-intrain, ]
+
+## Remove indicator, character and time variables from training data
+training <- training[,-c(1:7)]
+
+## Prepare 'clean' testing data set for trained models
+testing.clean <- testing[ , apply(testing, 2, function(x) {!any(is.na(x)) & !any( x == "") } )]
+testing.clean <- testing.clean[,-c(1:7)]
+```
