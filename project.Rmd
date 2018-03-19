@@ -2,7 +2,7 @@
 
 **End of Course Project- by Corey May**
 
-```{r}
+```{r, echo=FALSE}
 suppressMessages(library(ggplot2) )
 suppressMessages(library(caret) )
 suppressMessages(library(kernlab) )
@@ -24,11 +24,7 @@ pmltrain = read.csv("/Users/cmay/Documents/Training/pml-training.csv", stringsAs
 pmltest  = read.csv("/Users/cmay/Documents/Training/pml-testing.csv",  stringsAsFactors=FALSE)
   names(pmltrain)[names(pmltrain)=='X'] <- 'id'
   names(pmltest )[names(pmltest) =='X'] <- 'id'
-
   table(pmltrain$classe, exclude=FALSE)
-
-#  nrow(pmltrain[is.na(pmltrain$classe),])
-#  nrow(pmltrain[pmltrain$classe == " ",])
 
 ## Get the number of NA records in a dataframes of columns
 countnas <- function(z) {
@@ -83,7 +79,7 @@ testing.clean <- testing.clean[,-c(1:7)]
 
 Figure 2- boxplot of variable 'gyros_forearm_x', most values near-zero or zero
 
-```{r}
+```{r, echo=FALSE}
 p1 <- qplot(classe, training[,"gyros_forearm_y"], fill=classe, data=training, geom=c("boxplot"), ylab="gyros_forearm_y",
             main=paste0("Boxplot of ", "gyros_forearm_y") )
 
@@ -95,7 +91,7 @@ grid.arrange(p1,p2,ncol=2)
 
 Figure 3- principal component plot
 
-```{r}
+```{r, echo=FALSE}
 typeColor <- training$classe
 typeColor[typeColor =="A"] <- 1
 typeColor[typeColor =="B"] <- 2
@@ -119,7 +115,6 @@ plot(prcomp$x[,1], prcomp$x[,2], col=typeColor, xlab="PC1",ylab="PC2", cex=1)
                               gyros_dumbbell_x,gyros_dumbbell_y,gyros_dumbbell_z,gyros_forearm_x,gyros_forearm_y,gyros_forearm_z) )
  str(training2)
  str(testing2)
- q;
 ```
 
 
