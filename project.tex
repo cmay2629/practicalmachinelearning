@@ -1,0 +1,821 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\PassOptionsToPackage{usenames,dvipsnames}{color} % color is loaded by hyperref
+\hypersetup{unicode=true,
+            pdftitle={project.R},
+            pdfauthor={cmay},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\ImportTok}[1]{{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{{#1}}}}
+\newcommand{\BuiltInTok}[1]{{#1}}
+\newcommand{\ExtensionTok}[1]{{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\NormalTok}[1]{{#1}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{project.R}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{cmay}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{Wed Mar 14 13:42:00 2018}
+
+
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{#### END OF COURSE PROJECT ####}
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'ggplot2' was built under R version 3.3.2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(caret)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'caret' was built under R version 3.3.2
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: lattice
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in as.POSIXlt.POSIXct(Sys.time()): unknown timezone 'zone/tz/2018c.
+## 1.0/zoneinfo/America/New_York'
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(kernlab)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'kernlab'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:ggplot2':
+## 
+##     alpha
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(gridExtra)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'gridExtra' was built under R version 3.3.2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Read in and prepare data}
+\NormalTok{pmltrain =}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"/Users/cmay/Documents/Training/pml-training.csv"}\NormalTok{, }\DataTypeTok{stringsAsFactors=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{pmltest  =}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"/Users/cmay/Documents/Training/pml-testing.csv"}\NormalTok{,  }\DataTypeTok{stringsAsFactors=}\OtherTok{FALSE}\NormalTok{)}
+  \KeywordTok{names}\NormalTok{(pmltrain)[}\KeywordTok{names}\NormalTok{(pmltrain)==}\StringTok{'X'}\NormalTok{] <-}\StringTok{ 'id'}
+  \KeywordTok{names}\NormalTok{(pmltest )[}\KeywordTok{names}\NormalTok{(pmltest) ==}\StringTok{'X'}\NormalTok{] <-}\StringTok{ 'id'}
+
+  \KeywordTok{table}\NormalTok{(pmltrain$classe, }\DataTypeTok{exclude=}\OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##    A    B    C    D    E 
+## 5580 3797 3422 3216 3607
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \KeywordTok{table}\NormalTok{(pmltest$classe)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## < table of extent 0 >
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \KeywordTok{nrow}\NormalTok{(pmltrain[}\KeywordTok{is.na}\NormalTok{(pmltrain$classe),])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \KeywordTok{nrow}\NormalTok{(pmltrain[pmltrain$classe ==}\StringTok{ " "}\NormalTok{,])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Get the number of NA records in a dataframes of columns}
+\NormalTok{countnas <-}\StringTok{ }\NormalTok{function(z) \{}
+  \NormalTok{na_count <-}\KeywordTok{sapply}\NormalTok{(z, function(y) }\KeywordTok{sum}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{which}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(y) |}\StringTok{ }\NormalTok{y ==}\StringTok{ ""}\NormalTok{))))}
+  \NormalTok{na_count <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(na_count)}
+  \NormalTok{na_count$pct <-}\StringTok{ }\KeywordTok{round}\NormalTok{(na_count$na_count  /}\StringTok{ }\KeywordTok{nrow}\NormalTok{(z),}\DecValTok{4}\NormalTok{)}
+  \KeywordTok{return}\NormalTok{(na_count)}
+\NormalTok{\}}
+
+\NormalTok{## Writeout table for report}
+\CommentTok{#countnas(pmltrain)}
+\CommentTok{#outtrain <- countnas(pmltrain)}
+\CommentTok{#write.csv(cbind(names(pmltrain),outtrain),file="/Users/cmay/Documents/Training/outtrain.csv", quote=FALSE, row.names=FALSE)}
+
+
+\NormalTok{## Remove vars with at least one NA, most have 19K NA's}
+\NormalTok{## Set sample seed here.  This will be run 3 times by changing the seed to create different samples}
+\NormalTok{## Could also build a function for all of this work if I want to}
+  \NormalTok{## 1) seed 41;}
+  \NormalTok{## 2) seed 92621;}
+  \NormalTok{## 3) seed 52800}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{52800}\NormalTok{) }
+\NormalTok{pmltrain.clean <-}\StringTok{ }\NormalTok{pmltrain[ , }\KeywordTok{apply}\NormalTok{(pmltrain, }\DecValTok{2}\NormalTok{, function(x) \{!}\KeywordTok{any}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(x)) &}\StringTok{ }\NormalTok{!}\KeywordTok{any}\NormalTok{( x ==}\StringTok{ ""}\NormalTok{) \} )]}
+\NormalTok{pmltest.clean  <-}\StringTok{ }\NormalTok{pmltest[ ,  }\KeywordTok{apply}\NormalTok{(pmltest, }\DecValTok{2}\NormalTok{, function(x) \{!}\KeywordTok{any}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(x)) &}\StringTok{ }\NormalTok{!}\KeywordTok{any}\NormalTok{( x ==}\StringTok{ ""}\NormalTok{) \} )]}
+
+\NormalTok{## Remove character, id and timestamp variables from final test set}
+\NormalTok{pmltest.clean  <-}\StringTok{ }\NormalTok{pmltest.clean[,-}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{:}\DecValTok{7}\NormalTok{)]}
+\CommentTok{#str(pmltest.clean)}
+
+\NormalTok{## Build cross-validation training and test sets}
+\NormalTok{intrain  =}\StringTok{ }\KeywordTok{createDataPartition}\NormalTok{(pmltrain.clean$classe, }\DataTypeTok{p=}\DecValTok{3}\NormalTok{/}\DecValTok{4}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{training =}\StringTok{ }\NormalTok{pmltrain.clean[ intrain, ]}
+\NormalTok{testing  =}\StringTok{ }\NormalTok{pmltrain.clean[-intrain, ]}
+\CommentTok{#str(training); str(testing)}
+
+
+\NormalTok{## Remove indicator, character and time variables from training data}
+\NormalTok{training <-}\StringTok{ }\NormalTok{training[,-}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{:}\DecValTok{7}\NormalTok{)]}
+\CommentTok{#str(training); summary(training); head(training,4)}
+\CommentTok{#nzv <- nearZeroVar(training, saveMetrics=TRUE)}
+\CommentTok{#nzv}
+
+\NormalTok{## Prepare 'clean' testing data set for trained models}
+\NormalTok{testing.clean <-}\StringTok{ }\NormalTok{testing[ , }\KeywordTok{apply}\NormalTok{(testing, }\DecValTok{2}\NormalTok{, function(x) \{!}\KeywordTok{any}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(x)) &}\StringTok{ }\NormalTok{!}\KeywordTok{any}\NormalTok{( x ==}\StringTok{ ""}\NormalTok{) \} )]}
+\NormalTok{testing.clean <-}\StringTok{ }\NormalTok{testing.clean[,-}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{:}\DecValTok{7}\NormalTok{)]}
+\CommentTok{#str(testing.clean)}
+
+
+
+\NormalTok{##########################################################################################}
+\NormalTok{#### Exploratory Data Analysis}
+\NormalTok{## Change 'turn.on' value to 1 if I want to view plots again}
+\NormalTok{turn.on <-}\StringTok{ }\DecValTok{0}
+\NormalTok{if (turn.on ==}\StringTok{ }\DecValTok{1}\NormalTok{) \{}
+  \KeywordTok{featurePlot}\NormalTok{(}\DataTypeTok{x=} \NormalTok{training$classe, }\DataTypeTok{y=} \NormalTok{training[,}\KeywordTok{c}\NormalTok{(}\StringTok{'roll_belt'}\NormalTok{, }\StringTok{'pitch_belt'}\NormalTok{, }\StringTok{'yaw_belt'}\NormalTok{)], }\DataTypeTok{plot=}\StringTok{'pairs'}\NormalTok{)}
+  \KeywordTok{qplot}\NormalTok{(classe, magnet_arm_x, }\DataTypeTok{data=}\NormalTok{training)}
+  \KeywordTok{qplot}\NormalTok{(magnet_arm_x,roll_dumbbell, }\DataTypeTok{col=}\NormalTok{classe,   }\DataTypeTok{data=}\NormalTok{training)}
+  \KeywordTok{qplot}\NormalTok{(classe, total_accel_forearm, }\DataTypeTok{fill=}\NormalTok{classe, }\DataTypeTok{data=}\NormalTok{training, }\DataTypeTok{geom=}\KeywordTok{c}\NormalTok{(}\StringTok{"boxplot"}\NormalTok{))}
+  \KeywordTok{qplot}\NormalTok{(magnet_forearm_z, }\DataTypeTok{col=}\NormalTok{classe, }\DataTypeTok{data=}\NormalTok{training,}\DataTypeTok{geom=}\StringTok{"density"}\NormalTok{)}
+  \KeywordTok{plot}\NormalTok{(training$classe, training$roll_belt)}
+  
+  \NormalTok{## Build PDF files of different types of eda plots by variable}
+  \KeywordTok{pdf}\NormalTok{(}\DataTypeTok{file=}\StringTok{"/Users/cmay/Downloads/densityplots.pdf"}\NormalTok{)}
+  \KeywordTok{par}\NormalTok{(}\DataTypeTok{mar=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{0}\NormalTok{))}
+  \NormalTok{for (k in }\DecValTok{1}\NormalTok{:}\KeywordTok{length}\NormalTok{(training)) \{}
+    \KeywordTok{print}\NormalTok{(}\KeywordTok{qplot}\NormalTok{(training[,k], }\DataTypeTok{col=}\NormalTok{classe, }\DataTypeTok{data=}\NormalTok{training, }\DataTypeTok{geom=}\StringTok{"density"}\NormalTok{, }\DataTypeTok{xlab=}\KeywordTok{colnames}\NormalTok{(training[k]), }
+                \DataTypeTok{main=}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Variable #"}\NormalTok{,k) ) )}
+  \NormalTok{\}}
+  \KeywordTok{dev.off}\NormalTok{()}
+  
+  \KeywordTok{pdf}\NormalTok{(}\DataTypeTok{file=}\StringTok{"/Users/cmay/Downloads/boxplots.pdf"}\NormalTok{)}
+  \KeywordTok{par}\NormalTok{(}\DataTypeTok{mar=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{0}\NormalTok{))}
+  \NormalTok{for (k in }\DecValTok{1}\NormalTok{:(}\KeywordTok{length}\NormalTok{(training)-}\DecValTok{1}\NormalTok{) ) \{}
+    \NormalTok{p1 <-}\StringTok{ }\KeywordTok{qplot}\NormalTok{(classe, training[,k], }\DataTypeTok{fill=}\NormalTok{classe, }\DataTypeTok{data=}\NormalTok{training, }\DataTypeTok{geom=}\KeywordTok{c}\NormalTok{(}\StringTok{"boxplot"}\NormalTok{), }\DataTypeTok{ylab=}\KeywordTok{colnames}\NormalTok{(training[k]),}
+                \DataTypeTok{main=}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Boxplot of "}\NormalTok{, }\KeywordTok{colnames}\NormalTok{(training[k]) ) )}
+    
+    \NormalTok{p2 <-}\StringTok{ }\KeywordTok{qplot}\NormalTok{(classe, training[,k], }\DataTypeTok{fill=}\NormalTok{classe, }\DataTypeTok{data=}\NormalTok{training, }\DataTypeTok{geom=}\KeywordTok{c}\NormalTok{(}\StringTok{"boxplot"}\NormalTok{, }\StringTok{"jitter"}\NormalTok{), }\DataTypeTok{ylab=}\KeywordTok{colnames}\NormalTok{(training[k]),}
+                \DataTypeTok{main=}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Boxplot of "}\NormalTok{, }\KeywordTok{colnames}\NormalTok{(training[k]) ) )}
+    
+    \KeywordTok{grid.arrange}\NormalTok{(p1,p2,}\DataTypeTok{ncol=}\DecValTok{2}\NormalTok{)  }
+  \NormalTok{\}}
+  \KeywordTok{dev.off}\NormalTok{()}
+  
+  \KeywordTok{pdf}\NormalTok{(}\DataTypeTok{file=}\StringTok{"/Users/cmay/Downloads/histograms.pdf"}\NormalTok{)}
+  \KeywordTok{par}\NormalTok{(}\DataTypeTok{mar=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{0}\NormalTok{))}
+  \NormalTok{for (k in }\DecValTok{1}\NormalTok{:(}\KeywordTok{length}\NormalTok{(training)-}\DecValTok{1}\NormalTok{)) \{}
+    \KeywordTok{hist}\NormalTok{(training[,k], }\DataTypeTok{breaks=}\DecValTok{100}\NormalTok{, }\DataTypeTok{main=}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Histogram of "}\NormalTok{,}\KeywordTok{colnames}\NormalTok{(training[k])))}
+  \NormalTok{\}}
+  \KeywordTok{dev.off}\NormalTok{()}
+  
+  \KeywordTok{pdf}\NormalTok{(}\DataTypeTok{file=}\StringTok{"/Users/cmay/Downloads/histograms_log.pdf"}\NormalTok{)}
+  \KeywordTok{par}\NormalTok{(}\DataTypeTok{mar=}\KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{0}\NormalTok{))}
+  \NormalTok{for (k in }\DecValTok{1}\NormalTok{:(}\KeywordTok{length}\NormalTok{(training)-}\DecValTok{1}\NormalTok{)) \{}
+    \KeywordTok{hist}\NormalTok{(}\KeywordTok{log10}\NormalTok{(training[,k]), }\DataTypeTok{main=}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Histogram of "}\NormalTok{,}\KeywordTok{colnames}\NormalTok{(training[k])))}
+  \NormalTok{\}}
+  \KeywordTok{dev.off}\NormalTok{()}
+\NormalTok{\}}
+
+
+\NormalTok{## Remove predictors that have little to know relationship with outcome variable after eda}
+\NormalTok{## May not use this in the final version}
+\NormalTok{training2 <-}\StringTok{ }\KeywordTok{subset}\NormalTok{(training, }\DataTypeTok{select=}\NormalTok{-}\KeywordTok{c}\NormalTok{(gyros_belt_x,gyros_belt_y,gyros_belt_z,gyros_arm_x,gyros_arm_y,gyros_arm_z,}
+                                        \NormalTok{gyros_dumbbell_x,gyros_dumbbell_y,gyros_dumbbell_z,gyros_forearm_x,gyros_forearm_y,gyros_forearm_z) )}
+
+\NormalTok{testing2 <-}\StringTok{ }\KeywordTok{subset}\NormalTok{(testing.clean, }\DataTypeTok{select=}\NormalTok{-}\KeywordTok{c}\NormalTok{(gyros_belt_x,gyros_belt_y,gyros_belt_z,gyros_arm_x,gyros_arm_y,gyros_arm_z,}
+                                            \NormalTok{gyros_dumbbell_x,gyros_dumbbell_y,gyros_dumbbell_z,gyros_forearm_x,gyros_forearm_y,gyros_forearm_z) )}
+\CommentTok{#str(training2); str(testing2)}
+
+\NormalTok{##########################################################################################}
+\NormalTok{#### Principal Component Analysis ####}
+\NormalTok{#### Went through this but did not use PCA in my final report ####}
+\CommentTok{#m <- abs(cor(training[,-c(1:6,60)]))}
+\CommentTok{#diag(m) <- 0}
+\CommentTok{#which(m > 0.90, arr.ind=T)}
+\CommentTok{#plot(training$accel_belt_x, training$pitch_belt)}
+\CommentTok{#plot(training$accel_belt_z, training$roll_belt)}
+\CommentTok{#X <- -0.12*training$total_accel_belt - 0.99*training$roll_belt}
+\CommentTok{#Y <- -0.99*training$total_accel_belt + 0.12*training$roll_belt}
+\CommentTok{#plot(X,Y)}
+
+\CommentTok{#typeColor <- training$classe}
+\CommentTok{#table(typeColor)}
+\CommentTok{#typeColor[typeColor =="A"] <- 1}
+\CommentTok{#typeColor[typeColor =="B"] <- 2}
+\CommentTok{#typeColor[typeColor =="C"] <- 3}
+\CommentTok{#typeColor[typeColor =="D"] <- 4}
+\CommentTok{#typeColor[typeColor =="E"] <- 5}
+
+\NormalTok{## PCA- full set of variables for}
+\CommentTok{#nrow(pmltrain)}
+\CommentTok{#prcomp <- prcomp(training)}
+\CommentTok{#prcomp$rotation}
+\CommentTok{#str(prcomp)}
+\CommentTok{#prcomp}
+
+\CommentTok{#plot(prcomp$x[,1], prcomp$x[,2], xlab="PC1",ylab="PC2")}
+\CommentTok{#plot(prcomp$x[,1], prcomp$x[,2], col=typeColor, xlab="PC1",ylab="PC2", cex=1)}
+\CommentTok{#classPC <- predict(prcomp,training)}
+\CommentTok{#plot(classPC[,1], classPC[,2], col=typeColor, xlab="PC1",ylab="PC2")}
+
+
+\NormalTok{## PCA- reduced set of variables with caret package for testing}
+\CommentTok{#smallset <- training2[,c(1:10)]}
+\CommentTok{#str(smallset)}
+\CommentTok{#preproc <- preProcess(training2, method="pca", thresh=0.90)}
+\CommentTok{#str(preproc)}
+\CommentTok{#preproc$rotation}
+\CommentTok{#plot(preproc$x[,1], preproc$x[,2], col=typeColor, xlab="PC1",ylab="PC2")}
+
+
+\NormalTok{##########################################################################################}
+\NormalTok{#### Build models}
+\NormalTok{#### Rpart- classification and regression tree}
+\KeywordTok{print}\NormalTok{(}\StringTok{"Start of RPART"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Start of RPART"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{Sys.time}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "2018-03-14 17:42:07 GMT"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod.rpart <-}\StringTok{ }\KeywordTok{train}\NormalTok{(classe ~}\StringTok{ }\NormalTok{., }\DataTypeTok{data=}\NormalTok{training, }\DataTypeTok{method=}\StringTok{"rpart"}\NormalTok{)}
+\NormalTok{mod.rpart$finalModel}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## n= 14718 
+## 
+## node), split, n, loss, yval, (yprob)
+##       * denotes terminal node
+## 
+##  1) root 14718 10533 A (0.28 0.19 0.17 0.16 0.18)  
+##    2) roll_belt< 130.5 13492  9315 A (0.31 0.21 0.19 0.18 0.11)  
+##      4) pitch_forearm< -33.65 1193     9 A (0.99 0.0075 0 0 0) *
+##      5) pitch_forearm>=-33.65 12299  9306 A (0.24 0.23 0.21 0.2 0.12)  
+##       10) magnet_dumbbell_y< 438.5 10407  7472 A (0.28 0.18 0.24 0.19 0.11)  
+##         20) roll_forearm< 123.5 6505  3858 A (0.41 0.18 0.18 0.17 0.061) *
+##         21) roll_forearm>=123.5 3902  2610 C (0.074 0.18 0.33 0.23 0.19) *
+##       11) magnet_dumbbell_y>=438.5 1892   925 B (0.031 0.51 0.042 0.22 0.19) *
+##    3) roll_belt>=130.5 1226     8 E (0.0065 0 0 0 0.99) *
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Get predictions and confusion(accuracy matrix) for rpart}
+\NormalTok{pred.rpart <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(mod.rpart, testing)}
+\KeywordTok{confusionMatrix}\NormalTok{(testing$classe, pred.rpart)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction    A    B    C    D    E
+##          A 1247   29  113    0    6
+##          B  396  326  227    0    0
+##          C  391   29  435    0    0
+##          D  356  148  300    0    0
+##          E  126  127  235    0  413
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.4937          
+##                  95% CI : (0.4796, 0.5078)
+##     No Information Rate : 0.5131          
+##     P-Value [Acc > NIR] : 0.9968          
+##                                           
+##                   Kappa : 0.3388          
+##  Mcnemar's Test P-Value : NA              
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            0.4956  0.49469   0.3321       NA  0.98568
+## Specificity            0.9380  0.85324   0.8831   0.8361  0.89119
+## Pos Pred Value         0.8939  0.34352   0.5088       NA  0.45838
+## Neg Pred Value         0.6384  0.91580   0.7839       NA  0.99850
+## Prevalence             0.5131  0.13438   0.2671   0.0000  0.08544
+## Detection Rate         0.2543  0.06648   0.0887   0.0000  0.08422
+## Detection Prevalence   0.2845  0.19352   0.1743   0.1639  0.18373
+## Balanced Accuracy      0.7168  0.67396   0.6076       NA  0.93844
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## See what predictions look like on "real" test set}
+\NormalTok{pred.rpart2 <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(mod.rpart, pmltest.clean)}
+\NormalTok{pred.rpart2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] C A C A A C C A A A C C C A C A A A A C
+## Levels: A B C D E
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Save a plot of the tree}
+\NormalTok{if (turn.on ==}\StringTok{ }\DecValTok{1}\NormalTok{) \{}
+  \KeywordTok{pdf}\NormalTok{(}\DataTypeTok{file=}\StringTok{"/Users/cmay/Downloads/rpart_tree92621.pdf"}\NormalTok{)}
+  \KeywordTok{par}\NormalTok{(}\DataTypeTok{mar=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{))}
+  \KeywordTok{plot}\NormalTok{(mod.rpart$finalModel, }\DataTypeTok{uniform=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{main=}\StringTok{"Classification Tree"}\NormalTok{, }\DataTypeTok{cex.main=}\FloatTok{0.75}\NormalTok{)}
+  \KeywordTok{text}\NormalTok{(mod.rpart$finalModel, }\DataTypeTok{use.n=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{all=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{cex=}\FloatTok{0.7}\NormalTok{,}\DataTypeTok{pos=}\DecValTok{1}\NormalTok{)}
+  \KeywordTok{dev.off}\NormalTok{()}
+\NormalTok{\}}
+
+\KeywordTok{print}\NormalTok{(}\StringTok{"Start of RANDOM FORESTS- reduced set of variables, testing for time "}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Start of RANDOM FORESTS- reduced set of variables, testing for time "
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{Sys.time}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "2018-03-14 17:42:25 GMT"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{#### RF- Random Forest}
+\CommentTok{#mod.rf <- train(classe ~ roll_belt + yaw_belt + total_accel_belt + accel_belt_y + accel_belt_z + magnet_belt_y + magnet_belt_z +}
+\CommentTok{#                              roll_arm + pitch_arm + total_accel_arm + accel_arm_x + accel_arm_y + accel_arm_z + magnet_arm_x +}
+\CommentTok{#                              magnet_arm_y + magnet_arm_z + roll_dumbbell + pitch_dumbbell, data=training2, method="rf")}
+\NormalTok{mod.rf <-}\StringTok{ }\KeywordTok{train}\NormalTok{(classe ~}\StringTok{ }\NormalTok{., }\DataTypeTok{data=}\NormalTok{training2, }\DataTypeTok{method=}\StringTok{"rf"}\NormalTok{)}
+\KeywordTok{summary}\NormalTok{(mod.rf)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                 Length Class      Mode     
+## call                4  -none-     call     
+## type                1  -none-     character
+## predicted       14718  factor     numeric  
+## err.rate         3000  -none-     numeric  
+## confusion          30  -none-     numeric  
+## votes           73590  matrix     numeric  
+## oob.times       14718  -none-     numeric  
+## classes             5  -none-     character
+## importance         40  -none-     numeric  
+## importanceSD        0  -none-     NULL     
+## localImportance     0  -none-     NULL     
+## proximity           0  -none-     NULL     
+## ntree               1  -none-     numeric  
+## mtry                1  -none-     numeric  
+## forest             14  -none-     list     
+## y               14718  factor     numeric  
+## test                0  -none-     NULL     
+## inbag               0  -none-     NULL     
+## xNames             40  -none-     character
+## problemType         1  -none-     character
+## tuneValue           1  data.frame list     
+## obsLevels           5  -none-     character
+## param               0  -none-     list
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod.rf$finalModel}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+##  randomForest(x = x, y = y, mtry = param$mtry) 
+##                Type of random forest: classification
+##                      Number of trees: 500
+## No. of variables tried at each split: 2
+## 
+##         OOB estimate of  error rate: 0.79%
+## Confusion matrix:
+##      A    B    C    D    E class.error
+## A 4178    5    2    0    0 0.001672640
+## B   22 2819    7    0    0 0.010182584
+## C    0   25 2538    4    0 0.011297234
+## D    0    0   37 2372    3 0.016583748
+## E    0    1    4    6 2695 0.004065041
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Get predictions and confusion(accuracy matrix) for rf}
+\NormalTok{pred.rf <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(mod.rf, testing2)}
+\KeywordTok{confusionMatrix}\NormalTok{(testing2$classe, pred.rf)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction    A    B    C    D    E
+##          A 1392    1    2    0    0
+##          B   10  936    3    0    0
+##          C    0   14  838    3    0
+##          D    0    0   13  791    0
+##          E    0    0    0    9  892
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.9888          
+##                  95% CI : (0.9854, 0.9915)
+##     No Information Rate : 0.2859          
+##     P-Value [Acc > NIR] : < 2.2e-16       
+##                                           
+##                   Kappa : 0.9858          
+##  Mcnemar's Test P-Value : NA              
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            0.9929   0.9842   0.9790   0.9851   1.0000
+## Specificity            0.9991   0.9967   0.9958   0.9968   0.9978
+## Pos Pred Value         0.9978   0.9863   0.9801   0.9838   0.9900
+## Neg Pred Value         0.9972   0.9962   0.9956   0.9971   1.0000
+## Prevalence             0.2859   0.1939   0.1746   0.1637   0.1819
+## Detection Rate         0.2838   0.1909   0.1709   0.1613   0.1819
+## Detection Prevalence   0.2845   0.1935   0.1743   0.1639   0.1837
+## Balanced Accuracy      0.9960   0.9905   0.9874   0.9909   0.9989
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## See what predictions look like on "real" test set}
+\NormalTok{pred.rf2 <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(mod.rf, pmltest.clean)}
+\NormalTok{pred.rf2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] B A B A A E D B A A B C B A E E A B B B
+## Levels: A B C D E
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(}\StringTok{"Start of GBM"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Start of GBM"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{Sys.time}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "2018-03-14 18:43:32 GMT"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{#### GBM- boosting with trees}
+\CommentTok{#mod.gbm <- train(classe ~ roll_belt + yaw_belt + total_accel_belt + accel_belt_y + accel_belt_z + magnet_belt_y + magnet_belt_z +}
+\CommentTok{#                              roll_arm + pitch_arm + total_accel_arm + accel_arm_x + accel_arm_y + accel_arm_z + magnet_arm_x +}
+\CommentTok{#                              magnet_arm_y + magnet_arm_z + roll_dumbbell + pitch_dumbbell, data=training2, method="gbm", verbose=FALSE)}
+\NormalTok{mod.gbm <-}\StringTok{ }\KeywordTok{train}\NormalTok{(classe ~}\StringTok{ }\NormalTok{., }\DataTypeTok{data=}\NormalTok{training2, }\DataTypeTok{method=}\StringTok{"gbm"}\NormalTok{, }\DataTypeTok{verbose=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{mod.gbm$finalModel}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## A gradient boosted model with multinomial loss function.
+## 150 iterations were performed.
+## There were 40 predictors of which 36 had non-zero influence.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## get predictions and confusion(accuracy matrix) for gbm}
+\NormalTok{pred.gbm <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(mod.gbm, testing2)}
+\KeywordTok{confusionMatrix}\NormalTok{(testing2$classe, pred.gbm)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction    A    B    C    D    E
+##          A 1373   13    5    4    0
+##          B   40  873   30    2    4
+##          C    0   21  814   18    2
+##          D    0    8   25  769    2
+##          E    3   19    3   14  862
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.9566          
+##                  95% CI : (0.9505, 0.9621)
+##     No Information Rate : 0.2887          
+##     P-Value [Acc > NIR] : < 2.2e-16       
+##                                           
+##                   Kappa : 0.945           
+##  Mcnemar's Test P-Value : 1.699e-07       
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            0.9696   0.9347   0.9282   0.9529   0.9908
+## Specificity            0.9937   0.9809   0.9898   0.9915   0.9903
+## Pos Pred Value         0.9842   0.9199   0.9520   0.9565   0.9567
+## Neg Pred Value         0.9877   0.9846   0.9844   0.9907   0.9980
+## Prevalence             0.2887   0.1905   0.1788   0.1646   0.1774
+## Detection Rate         0.2800   0.1780   0.1660   0.1568   0.1758
+## Detection Prevalence   0.2845   0.1935   0.1743   0.1639   0.1837
+## Balanced Accuracy      0.9817   0.9578   0.9590   0.9722   0.9906
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## See what predictions look like on "real" test set}
+\NormalTok{pred.gbm2 <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(mod.gbm, pmltest.clean)}
+\NormalTok{pred.gbm2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] B A B A A E D B A A B C B A E E A B B B
+## Levels: A B C D E
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{#### Ensembled Model}
+\NormalTok{## Stack RPART, RF and GBM models}
+\NormalTok{stacked.dat <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(pred.rpart, pred.rf, pred.gbm, }\DataTypeTok{classe=}\NormalTok{testing2$classe)}
+\KeywordTok{str}\NormalTok{(stacked.dat)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    4904 obs. of  4 variables:
+##  $ pred.rpart: Factor w/ 5 levels "A","B","C","D",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ pred.rf   : Factor w/ 5 levels "A","B","C","D",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ pred.gbm  : Factor w/ 5 levels "A","B","C","D",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ classe    : Factor w/ 5 levels "A","B","C","D",..: 1 1 1 1 1 1 1 1 1 1 ...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Train the combined stacked predictors using random forests}
+\NormalTok{mod.stack  <-}\StringTok{ }\KeywordTok{train}\NormalTok{(classe ~., }\DataTypeTok{method=}\StringTok{"rf"}\NormalTok{, }\DataTypeTok{data=}\NormalTok{stacked.dat)}
+
+\NormalTok{## Get predictions and confusion(accuracy matrix) for stacked models}
+\NormalTok{pred.stack <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(mod.stack, stacked.dat)}
+\KeywordTok{confusionMatrix}\NormalTok{(testing2$classe, pred.stack)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction    A    B    C    D    E
+##          A 1392    1    2    0    0
+##          B   10  936    3    0    0
+##          C    0   14  838    3    0
+##          D    0    0   13  791    0
+##          E    0    0    0    9  892
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.9888          
+##                  95% CI : (0.9854, 0.9915)
+##     No Information Rate : 0.2859          
+##     P-Value [Acc > NIR] : < 2.2e-16       
+##                                           
+##                   Kappa : 0.9858          
+##  Mcnemar's Test P-Value : NA              
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity            0.9929   0.9842   0.9790   0.9851   1.0000
+## Specificity            0.9991   0.9967   0.9958   0.9968   0.9978
+## Pos Pred Value         0.9978   0.9863   0.9801   0.9838   0.9900
+## Neg Pred Value         0.9972   0.9962   0.9956   0.9971   1.0000
+## Prevalence             0.2859   0.1939   0.1746   0.1637   0.1819
+## Detection Rate         0.2838   0.1909   0.1709   0.1613   0.1819
+## Detection Prevalence   0.2845   0.1935   0.1743   0.1639   0.1837
+## Balanced Accuracy      0.9960   0.9905   0.9874   0.9909   0.9989
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{##### Final Predictions}
+\NormalTok{## Make final predictions for end of project quiz using Random Forests as it had the best out of sample accuracy}
+\NormalTok{final.prediction <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(mod.rf, pmltest.clean)}
+\NormalTok{final.prediction}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] B A B A A E D B A A B C B A E E A B B B
+## Levels: A B C D E
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(final.prediction)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## A B C D E 
+## 7 8 1 1 3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{Sys.time}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "2018-03-14 19:04:07 GMT"
+\end{verbatim}
+
+\end{document}
