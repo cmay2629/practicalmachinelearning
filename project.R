@@ -11,10 +11,9 @@ pmltest  = read.csv("/Users/cmay/Documents/Training/pml-testing.csv",  stringsAs
   names(pmltest )[names(pmltest) =='X'] <- 'id'
 
   table(pmltrain$classe, exclude=FALSE)
-  table(pmltest$classe)
 
-  nrow(pmltrain[is.na(pmltrain$classe),])
-  nrow(pmltrain[pmltrain$classe == " ",])
+#  nrow(pmltrain[is.na(pmltrain$classe),])
+#  nrow(pmltrain[pmltrain$classe == " ",])
 
 ## Get the number of NA records in a dataframes of columns
 countnas <- function(z) {
@@ -25,7 +24,7 @@ countnas <- function(z) {
 }
 
 ## Writeout table for report
-#countnas(pmltrain)
+countnas(pmltrain)
 #outtrain <- countnas(pmltrain)
 #write.csv(cbind(names(pmltrain),outtrain),file="/Users/cmay/Documents/Training/outtrain.csv", quote=FALSE, row.names=FALSE)
 
@@ -36,7 +35,7 @@ countnas <- function(z) {
   ## 1) seed 41;
   ## 2) seed 92621;
   ## 3) seed 52800
-set.seed(52800) 
+set.seed(41) 
 pmltrain.clean <- pmltrain[ , apply(pmltrain, 2, function(x) {!any(is.na(x)) & !any( x == "") } )]
 pmltest.clean  <- pmltest[ ,  apply(pmltest, 2, function(x) {!any(is.na(x)) & !any( x == "") } )]
 
@@ -113,6 +112,13 @@ if (turn.on == 1) {
   dev.off()
 }
 
+p1 <- qplot(classe, training[,"gyros_forearm_y"], fill=classe, data=training, geom=c("boxplot"), ylab="gyros_forearm_y",
+            main=paste0("Boxplot of ", "gyros_forearm_y") )
+
+p2 <- qplot(classe, training[,"gyros_forearm_y"], fill=classe, data=training, geom=c("boxplot", "jitter"), ylab="gyros_forearm_y",
+            main=paste0("Boxplot of ", "gyros_forearm_y" ) )
+
+grid.arrange(p1,p2,ncol=2)  
 
 ## Remove predictors that have little to know relationship with outcome variable after eda
 ## May not use this in the final version
@@ -135,23 +141,23 @@ testing2 <- subset(testing.clean, select=-c(gyros_belt_x,gyros_belt_y,gyros_belt
 #Y <- -0.99*training$total_accel_belt + 0.12*training$roll_belt
 #plot(X,Y)
 
-#typeColor <- training$classe
-#table(typeColor)
-#typeColor[typeColor =="A"] <- 1
-#typeColor[typeColor =="B"] <- 2
-#typeColor[typeColor =="C"] <- 3
-#typeColor[typeColor =="D"] <- 4
-#typeColor[typeColor =="E"] <- 5
+typeColor <- training$classe
+table(typeColor)
+typeColor[typeColor =="A"] <- 1
+typeColor[typeColor =="B"] <- 2
+typeColor[typeColor =="C"] <- 3
+typeColor[typeColor =="D"] <- 4
+typeColor[typeColor =="E"] <- 5
 
 ## PCA- full set of variables for
 #nrow(pmltrain)
-#prcomp <- prcomp(training)
+prcomp <- prcomp(training[,-53])
 #prcomp$rotation
 #str(prcomp)
 #prcomp
 
 #plot(prcomp$x[,1], prcomp$x[,2], xlab="PC1",ylab="PC2")
-#plot(prcomp$x[,1], prcomp$x[,2], col=typeColor, xlab="PC1",ylab="PC2", cex=1)
+plot(prcomp$x[,1], prcomp$x[,2], col=typeColor, xlab="PC1",ylab="PC2", cex=1)
 #classPC <- predict(prcomp,training)
 #plot(classPC[,1], classPC[,2], col=typeColor, xlab="PC1",ylab="PC2")
 
@@ -244,4 +250,19 @@ final.prediction <- predict(mod.rf, pmltest.clean)
 final.prediction
 summary(final.prediction)
 
+
+  
+finalresults <- data.frame(model.type= c('RPART', 'RF', 'GBM', 'Ensemble Model'), 
+                           Sample1 = c(49.3, 99.3, 95.8, 99.3),
+                           Sample2 = c(49.9, 98.9, 95.8, 98.9),
+                           Sample3 = c(49.4, 98.9, 95.7, 98.9),
+                           Average = c(49.5, 99.0, 95.8, 99.0)
+                           )
+saveRDS(finalresults,file="/Users/cmay/Documents/Training/finalresults.rds")
+finalresults
+
+#finalpredictions <- data.frame(
+#                      Sample= c('Sample1-RF', 'Sample2-RF', 'Sample3-RF'),
+                      
+#Sample 1-RF	B A B A A E D B A A B C B A E E A B B B
 Sys.time()
