@@ -1,8 +1,15 @@
+---
+title: "project.Rmd"
+author: "Corey May"
+date: "3/20/2018"
+output: html_document
+---
+
 **Practical Machine Learning**
 
-**End of Course Project- by Corey May**
 
-```{r, echo=FALSE}
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 suppressMessages(library(ggplot2) )
 suppressMessages(library(caret) )
 suppressMessages(library(kernlab) )
@@ -15,7 +22,7 @@ Below are the steps I took to complete the end of course project.  This write-up
 
 **Data Preparation and EDA**
 
-The first step of the project was data preparation and EDA.  I began by eliminating variables that had insufficient data, 100 out of 160 variables had missing values (NA’s) for 98% of the 19,622 records.   These variables were removed from the analysis in both the training and test sets (see figure 1). 
+The first step of the project was data preparation and EDA.  I began by eliminating variables that had missing data, 100 out of 160 variables had missing values (NA’s) for 98% of the 19,622 records.   These variables were removed from the analysis in both the training and test sets (see figure 1). 
 
 
 ```{r}
@@ -113,32 +120,37 @@ plot(prcomp$x[,1], prcomp$x[,2], col=typeColor, xlab="PC1",ylab="PC2", cex=1)
 
  testing2 <- subset(testing.clean, select=-c(gyros_belt_x,gyros_belt_y,gyros_belt_z,gyros_arm_x,gyros_arm_y,gyros_arm_z,
                               gyros_dumbbell_x,gyros_dumbbell_y,gyros_dumbbell_z,gyros_forearm_x,gyros_forearm_y,gyros_forearm_z) )
- str(training2)
- str(testing2)
+ #str(training2)
+ #str(testing2)
 ```
 
 
 **Modeling**
  
-For the exploratory data analysis the data was partitioned into training and test sets (75%/25% split). I continued on with this split creating three subsamples for 3-fold cross validation.  One run of the cross validation is highlighted in this section but all three were run and the results summarized below.  The training and test sets had 14,718 and 4,904 observations with 60 variables, respectively.  After removing the predictors starting with “gyro” and seven additional character, timestamp and/or id variables I was left with 41 predictors to train/test on.
+For the exploratory data analysis the data was partitioned into training and test sets (75%/25% split). I continued on with this split creating three subsamples for 3-fold cross validation.  One run of the cross validation is highlighted in this section but all three were run and the results summarized below.  The training and test sets had 14,718 and 4,904 observations with 60 variables, respectively.  After removing the predictors starting with “gyro” and seven additional character, timestamp and/or id variables I was left with 40 predictors to train/test on.
 
 I built three types of models, RPART- classification and regression tree (see figure 4), RF- random forest and GBM- boosting with trees.  I also stacked these models to see how an ensemble model performed.
 
-Figure 4- classification and regression tree
+
 ```{r}
 #### Rpart- classification and regression tree
 mod.rpart <- train(classe ~ ., data=training, method="rpart")
 mod.rpart$finalModel
 
-## Plot Classification and Regression Tree
-  par(mar=c(1,4,1,4))
-  plot(mod.rpart$finalModel, uniform=TRUE, main="Classification Tree", cex.main=0.75)
-  text(mod.rpart$finalModel, use.n=TRUE, all=TRUE, cex=0.7,pos=1)
-  
 ## Get predictions and confusion(accuracy matrix) for rpart
 pred.rpart <- predict(mod.rpart, testing)
 confusionMatrix(testing$classe, pred.rpart)
 ```
+
+Figure 4- classification and regression tree
+
+```{r}
+## Plot Classification and Regression Tree
+  par(mar=c(1,4,1,4))
+  plot(mod.rpart$finalModel, uniform=TRUE, main="Classification Tree", cex.main=0.75)
+  text(mod.rpart$finalModel, use.n=TRUE, all=TRUE, cex=0.7,pos=1)
+```
+
 
 
 ```{r}
